@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Transférer - Pay My Buddy</title>
+</head>
+<body>
+<header>
+    <nav aria-label="Navigation principale">
+        <span>Pay My Buddy</span>
+        <a th:href="@{/transfer}" aria-current="page">Transférer</a>
+        <a th:href="@{/profile}">Profil</a>
+        <a th:href="@{/connections}">Ajouter relation</a>
+        <form th:action="@{/logout}" method="post" style="display:inline">
+            <button type="submit">Se déconnecter</button>
+        </form>
+    </nav>
+</header>
+<main>
+    <h1>Transférer de l'argent</h1>
+    <p th:if="${error}" th:text="${error}" role="alert"></p>
+
+    <form th:action="@{/transfer}" method="post">
+        <label for="receiverId">Relation</label>
+        <select id="receiverId" name="receiverId" required>
+            <option value="">Sélectionner une relation</option>
+            <option th:each="c : ${connections}" th:value="${c.id}" th:text="${c.username}"></option>
+        </select>
+
+        <label for="description">Description</label>
+        <input id="description" name="description" type="text" maxlength="200">
+
+        <label for="amount">Montant (€)</label>
+        <input id="amount" name="amount" type="number" step="0.01" min="0.01" required>
+
+        <button type="submit">Payer</button>
+    </form>
+
+    <h2>Mes transactions</h2>
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">Relation</th>
+            <th scope="col">Description</th>
+            <th scope="col">Montant</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${transactions}">
+            <td th:text="${t.receiver.username}"></td>
+            <td th:text="${#strings.isEmpty(t.description)} ? '-' : ${t.description}"></td>
+            <td th:text="${t.amount} + ' €'"></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
